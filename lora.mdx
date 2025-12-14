@@ -5,7 +5,7 @@ description: "Low-Rank Adaptation Fine-tuning"
 
 ## Summary of concept
 
-Low-Rank Adaptation (LoRA) is a technique used to fine-tune large AI models (like e.g. GPT-4) efficiently. Instead of retraining the entire model, LoRA freezes the original weights and adds tiny, trainable adapter layers. This drastically reduces the computational cost and memory required for training, allowing you to achieve performance comparable to full fine-tuning with less than 1% of the trainable parameters.
+Low-Rank Adaptation (LoRA) is a technique used to fine-tune large AI models (e.g. GPT-4) efficiently. Instead of retraining the entire model, LoRA freezes the original weights and adds tiny, trainable adapter layers. This drastically reduces the computational cost and memory required for training, allowing you to achieve performance comparable to full fine-tuning with less than 1% of the trainable parameters.
 
 <Table>
   <TableHead>
@@ -34,15 +34,13 @@ Low-Rank Adaptation (LoRA) is a technique used to fine-tune large AI models (lik
   </TableBody>
 </Table>
 
-## What is LoRA?
-
+### What is LoRA?
 LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning (PEFT) method designed to adapt large pre-trained Large Language Models (LLMs) to specific tasks, such as coding, medical diagnosis, or legal analysis, without the prohibitive cost of traditional training methods.
 
-## The issue: Full fine-tuning is expensive
-
+### The issue: Full fine-tuning is expensive
 To understand why LoRA is necessary, we have to look at the "weight" of modern AI. A model like Llama-3-70B has 70 billion parameters (weights). These parameters are essentially giant matrices of numbers that the model uses to process information. Traditionally, if you wanted to teach this model a new skill, you would do full fine-tuning i.e., update every single one of those 70 billion parameters. But this comes with a high computational cost. First, calculating the gradients (updates) for 70 billion parameters requires massive amounts of GPU. Second, every time you create a fine-tuned version, you have to save a new copy of the entire 70-billion-parameter model.
 
-## Solution: LoRA
+### Solution: LoRA
 
 LoRA solves this problem by realizing that you don't need to change the entire "brain" of the model to teach it a new trick. Instead, LoRA freezes the original weights and adds two tiny matrices next to them. During training, we only update these tiny matrices. During inference, we combine the results.
 
