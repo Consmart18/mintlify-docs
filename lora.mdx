@@ -3,9 +3,9 @@ title: "LoRA Fine-tuning"
 description: "Low-Rank Adaptation Fine-tuning"
 ---
 
-## Summary of concept
+### Summary of concept
 
-Low-Rank Adaptation (LoRA) is a technique used to fine-tune large AI models (e.g. GPT-4) efficiently. Instead of retraining the entire model, LoRA freezes the original weights and adds tiny, trainable adapter layers. This drastically reduces the computational cost and memory required for training, allowing you to achieve performance comparable to full fine-tuning with less than 1% of the trainable parameters.
+Low-Rank Adaptation (LoRA) is a technique used for fine-tuning large AI models (e.g. GPT-4) efficiently. Instead of retraining the entire model, LoRA freezes the original weights and adds tiny, trainable adapter layers. This drastically reduces the computational cost and memory required for training, allowing you to achieve performance comparable to full fine-tuning with less than 1% of the trainable parameters.
 
 <Table>
   <TableHead>
@@ -45,25 +45,17 @@ To understand why LoRA is necessary, we have to look at the "weight" of modern A
 LoRA solves this problem by realizing that you don't need to change the entire "brain" of the model to teach it a new trick. Instead, LoRA freezes the original weights and adds two tiny matrices next to them. During training, we only update these tiny matrices. During inference, we combine the results.
 
 <Steps>
-  <Step title="Step 1">
-    We take the original weight matrix W and lock it. It will not change.
-  </Step>
-  <Step title="Step 2">
-    We create two smaller matrices, A and B. If W is a 1000 X 1000 matrix (1,000,000 parameters), we might factor it down using a rank (r) of 4. Matrix A becomes 1000 X 4 and Matrix B becomes 4 X 1000. And the total parameters in A and B become 8000.
-  </Step>
-  <Step title="Step 3">
-    We train only A and B on the new data.
-  </Step>
+  <Step title="Step 1">We take the original weight matrix W and lock it. It will not change.</Step>
+  <Step title="Step 2">We create two smaller matrices, A and B. If W is a 1000 X 1000 matrix (1,000,000 parameters), we might factor it down using a rank (r) of 4. Matrix A becomes 1000 X 4 and Matrix B becomes 4 X 1000. And the total parameters in A and B become 8000.</Step>
+  <Step title="Step 3">We train only A and B on the new data.</Step>
   <Step title="Step 4">
     When the model runs, the output is calculated as:
-    
     <Latex>Output = (W + A X B) X Input</Latex>
   </Step>
 </Steps>
 
 <img src="/images/LoRA.png" alt="Figure 1: Full-Parameter Fine-tuning vs LoRA Fine-tuning comparison diagram" />
 
-<p style={{ textAlign: 'center' }}>*Full-Parameter Fine-tuning vs LoRA Fine-tuning ([source](https://www.geeksforgeeks.org/deep-learning/what-is-low-rank-adaptation-lora/))*</p>
+<p style={{ textAlign: 'center' }}>*Figure 1: Full-Parameter Fine-tuning vs LoRA Fine-tuning ([source](https://www.geeksforgeeks.org/deep-learning/what-is-low-rank-adaptation-lora/))*</p>
 
-In the figure 1 above, notice that the training path for full fine-tuning flows directly through the massive block of Pre-trained weights. This means every parameter in the main model is being recalculated and updated. Meanwhile, for LoRA, the Pre-trained weights are completely frozen - no training signal passes through them. Instead, the training process flows exclusively through the adapter, containing the small matrices A and B.
-
+In Figure 1 above, notice that the training path for full fine-tuning flows directly through the massive block of Pre-trained weights. This means every parameter in the main model is being recalculated and updated. In contrast, for LoRA, the Pre-trained weights are completely frozen—no training signal passes through them. Instead, the training process flows exclusively through the adapter, containing the small matrices A and B.
