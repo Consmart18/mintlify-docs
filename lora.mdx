@@ -1,0 +1,69 @@
+---
+title: "LoRA Fine-tuning"
+description: "Learn about Low-Rank Adaptation (LoRA), an efficient fine-tuning technique for large AI models"
+---
+
+<img src="/images/logo_lockup_black.svg" alt="Logo" />
+
+## Summary of concept
+
+Low-Rank Adaptation (LoRA) is a technique used to fine-tune large AI models (like e.g. GPT-4) efficiently. Instead of retraining the entire model, LoRA freezes the original weights and adds tiny, trainable adapter layers. This drastically reduces the computational cost and memory required for training, allowing you to achieve performance comparable to full fine-tuning with less than 1% of the trainable parameters.
+
+<Table>
+  <TableHead>
+    <TableRow>
+      <TableHeader></TableHeader>
+      <TableHeader>Full fine-tuning</TableHeader>
+      <TableHeader>LoRA</TableHeader>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell>**Parameters updated**</TableCell>
+      <TableCell>100% of weights</TableCell>
+      <TableCell>Usually &lt;1% of weights</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>**Compute**</TableCell>
+      <TableCell>Very high GPU required;<br />Full model storage (e.g. 500 GB)</TableCell>
+      <TableCell>Low GPU required;<br />Small adapter storage (e.g. 10 MB)</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>**Performance**</TableCell>
+      <TableCell>Best possible</TableCell>
+      <TableCell>Comparable to full finetuning</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+## What is LoRA?
+
+LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning (PEFT) method designed to adapt large pre-trained Large Language Models (LLMs) to specific tasks, such as coding, medical diagnosis, or legal analysis, without the prohibitive cost of traditional training methods.
+
+## The issue: Full fine-tuning is expensive
+
+To understand why LoRA is necessary, we have to look at the "weight" of modern AI. A model like Llama-3-70B has 70 billion parameters (weights). These parameters are essentially giant matrices of numbers that the model uses to process information. Traditionally, if you wanted to teach this model a new skill, you would do full fine-tuning i.e., update every single one of those 70 billion parameters. But this comes with a high computational cost. First, calculating the gradients (updates) for 70 billion parameters requires massive amounts of GPU. Second, every time you create a fine-tuned version, you have to save a new copy of the entire 70-billion-parameter model.
+
+## Solution: LoRA
+
+LoRA solves this problem by realizing that you don't need to change the entire "brain" of the model to teach it a new trick. Instead, LoRA freezes the original weights and adds two tiny matrices next to them. During training, we only update these tiny matrices. During inference, we combine the results.
+
+<Steps>
+  <Step title="Step 1">
+    We take the original weight matrix W and lock it. It will not change.
+  </Step>
+  <Step title="Step 2">
+    We create two smaller matrices, A and B. If W is a 1000 X 1000 matrix (1,000,000 parameters), we might factor it down using a rank (r) of 4. Matrix A becomes 1000 X 4 and Matrix B becomes 4 X 1000. And the total parameters in A and B become 8000.
+  </Step>
+  <Step title="Step 3">
+    We train only A and B on the new data.
+  </Step>
+  <Step title="Step 4">
+    When the model runs, the output is calculated as: Output = (W + A X B) X Input
+  </Step>
+</Steps>
+
+<img src="/images/LoRA.png" alt="Full-Parameter Fine-tuning vs LoRA Fine-tuning comparison diagram" />
+
+In the illustrative image above, notice that the training path for full fine-tuning flows directly through the massive block of Pre-trained weights. This means every parameter in the main model is being recalculated and updated. Meanwhile, for LoRA, the Pre-trained weights are completely frozen - no training signal passes through them. Instead, the training process flows exclusively through the adapter, containing the small matrices A and B.
+
