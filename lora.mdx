@@ -58,4 +58,4 @@ LoRA solves this problem by realizing that you don't need to change the entire "
 
 <p style={{ textAlign: 'center' }}>*Figure 1: Full-Parameter Fine-tuning vs LoRA Fine-tuning ([source](https://www.geeksforgeeks.org/deep-learning/what-is-low-rank-adaptation-lora/))*</p>
 
-In Figure 1 above, notice that the training path for full fine-tuning flows directly through the massive block of Pre-trained weights. This means every parameter in the main model is being recalculated and updated. In contrast, for LoRA, the Pre-trained weights are completely frozen—no training signal passes through them. Instead, the training process flows exclusively through the adapter, containing the small matrices A and B.
+In Figure 1 above, notice that the training path for full fine-tuning flows directly through the massive block of pre-trained weights. This means every parameter in the main model is being recalculated and updated. In contrast, for LoRA, the pre-trained weights are completely frozen. Instead, the training process flows exclusively through the adapter, containing the small matrices A and B.
